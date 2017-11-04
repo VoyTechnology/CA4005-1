@@ -7,9 +7,6 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-// Temporary debugging imports.
-import java.io.ByteArrayOutputStream;
-
 class RandGen {
   static byte[] generate() {
     //TODO: Replace with actual random generation.
@@ -35,7 +32,6 @@ public class Assignment1 {
     } catch (Exception ex) {
       throw new RuntimeException(ex);
     }
-
   }
 
   static String toHex(final byte[] bytes) {
@@ -67,7 +63,6 @@ public class Assignment1 {
   }
 
   static void encrypt(String file, byte[] keyBytes) throws Exception {
-    System.out.println("Key: " + toHex(keyBytes));
     Cipher c = Cipher.getInstance("AES/CBC/NoPadding");
     SecretKeySpec key = new SecretKeySpec(keyBytes, "AES");
     IvParameterSpec iv = new IvParameterSpec(RandGen.generate());
@@ -76,22 +71,17 @@ public class Assignment1 {
     c.init(Cipher.ENCRYPT_MODE, key, iv);
 
     InputStream in = new FileInputStream(file);
-    //TODO: Swap around after debugging.
-    // OutputStream out = new FileOutputStream(file+".encrypted");
-    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    OutputStream out = new FileOutputStream(file+".encrypted");
 
     while(true){
       byte[] buf = new byte[16];
       int n = in.read(buf, 0, 16);
-      System.out.println("Managed to read in " + n + " bytes");
       if(n == 16){
         out.write(c.update(buf));
-        System.out.println("Block:" + toHex(buf));
         continue;
       }
       if(n == -1) {
         buf = new byte[]{(byte)0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0};
-        System.out.println("Block:" + toHex(buf));
         out.write(c.update(buf));
         break;
       }
@@ -100,14 +90,11 @@ public class Assignment1 {
         n++;
         buf[n] = 0x00;
       }
-      System.out.println("Block:" + toHex(buf));
       out.write(c.update(buf));
       break;
     }
 
     in.close();
-    //TODO: Remove after debugging
-    System.out.println("OUTPUT: " + toHex(out.toByteArray()));
     out.flush();
     out.close();
   }
