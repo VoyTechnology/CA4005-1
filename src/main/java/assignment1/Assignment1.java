@@ -80,18 +80,19 @@ public class Assignment1 {
     // OutputStream out = new FileOutputStream(file+".encrypted");
     ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-    byte[] buf = new byte[16];
     while(true){
+      byte[] buf = new byte[16];
       int n = in.read(buf, 0, 16);
+      System.out.println("Managed to read in " + n + " bytes");
       if(n == 16){
-        out.write(c.doFinal(buf));
-        System.out.println(toHex(buf));
+        out.write(c.update(buf));
+        System.out.println("Block:" + toHex(buf));
         continue;
       }
       if(n == -1) {
         buf = new byte[]{(byte)0x80, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0};
-        System.out.println(toHex(buf));
-        out.write(c.doFinal(buf));
+        System.out.println("Block:" + toHex(buf));
+        out.write(c.update(buf));
         break;
       }
       buf[n] = (byte)0x80;
@@ -99,14 +100,14 @@ public class Assignment1 {
         n++;
         buf[n] = 0x00;
       }
-      System.out.println(toHex(buf));
-      out.write(c.doFinal(buf));
+      System.out.println("Block:" + toHex(buf));
+      out.write(c.update(buf));
       break;
     }
 
     in.close();
     //TODO: Remove after debugging
-    System.out.println(toHex(out.toByteArray()));
+    System.out.println("OUTPUT: " + toHex(out.toByteArray()));
     out.flush();
     out.close();
   }
