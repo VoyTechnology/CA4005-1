@@ -16,7 +16,7 @@ public class Rsa {
 
     BigInteger c = modExp(m, e, n);
 
-    System.out.println("C: "+ c.toString(16));
+    System.out.println(c.toString(16));
   }
 
   static BigInteger modinv(BigInteger a, BigInteger b) {
