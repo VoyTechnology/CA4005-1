@@ -19,18 +19,11 @@ public class Rsa {
     System.out.println(c.toString(16));
   }
 
-  static BigInteger modinv(BigInteger a, BigInteger b) {
-    return a.modInverse(b);
-  }
-
   static BigInteger modExp(BigInteger m, BigInteger e, BigInteger n) {
-    // BigInteger y = BigInteger.ONE;
-    // for(i = 0; n.n.subtract(BigInteger.ONE); i++) {
-    //
-    // }
     return squareMul(m, e).mod(n);
   }
 
+  // Algorithm based on https://simple.wikipedia.org/wiki/Exponentiation_by_squaring
   static BigInteger squareMul(BigInteger x, BigInteger n) {
     if(n.equals(BigInteger.ONE)) {
       return x;
